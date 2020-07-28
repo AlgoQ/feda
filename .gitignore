@@ -131,3 +131,7 @@ dmypy.json
 # Test
 test
 test*
+mainHist.py
+
+# Data
+data
