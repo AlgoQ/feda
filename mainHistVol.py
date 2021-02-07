@@ -14,6 +14,7 @@ for pair in allPairs:
 
 tickers = exchange.fetch_tickers(btcPairs)
 btcPairs2 = []
+
 for symbol, value in tickers.items():
     if float(value['quoteVolume']) > 200:
         btcPairs2.append(symbol)
@@ -32,4 +33,3 @@ for pair in btcPairs2:
     datamanager = histCryptoDatafeed(fileName=f'data_binance/ohlcv_binance_{pair}_365days.json', pair=pair, days=365, strExchange='binance')
 
 ohlcv_binance_BTCUSDT = datamanager.fetchDatafeed()
-
