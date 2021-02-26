@@ -28,6 +28,22 @@ class histCryptoDatafeed:
             })
 
             self.limit = 1000
+
+        elif self.strExchange == 'bybit':
+            self.exchange = ccxt.bybit({
+                'enableRateLimit': True
+            })
+
+            self.limit = 200
+        elif self.strExchange == 'okexFutures':
+            self.exchange = ccxt.okex({
+                'enableRateLimit': True,
+                'options': {
+                    'defaultType': 'future',
+                }
+            })
+
+            self.limit = 300
         else:
             raise Exception('Exchange is not supported')
 
