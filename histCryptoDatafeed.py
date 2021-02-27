@@ -44,6 +44,12 @@ class histCryptoDatafeed:
             })
 
             self.limit = 300
+        elif self.strExchange == 'bitstamp':
+            self.exchange = ccxt.bitstamp({
+                'enableRateLimit': True
+            })
+
+            self.limit = 1000
         else:
             raise Exception('Exchange is not supported')
 
