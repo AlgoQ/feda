@@ -50,8 +50,6 @@ class histCryptoDatafeed:
             })
 
             self.limit = 1000
-        else:
-            raise Exception('Exchange is not supported')
         elif self.strExchange == 'ftx':
             self.exchange = ccxt.ftx({
                 'enableRateLimit': True,
