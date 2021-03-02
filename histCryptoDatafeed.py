@@ -52,6 +52,17 @@ class histCryptoDatafeed:
             self.limit = 1000
         else:
             raise Exception('Exchange is not supported')
+        elif self.strExchange == 'ftx':
+            self.exchange = ccxt.ftx({
+                'enableRateLimit': True,
+                'options': {
+                    'defaultType': 'future',
+                }
+            })
+
+            self.limit = 5000
+        else:
+            raise Exception('Exchange is not supported')
 
     def _calcMillis(self):
         minute = 60000
