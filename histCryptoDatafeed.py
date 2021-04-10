@@ -68,7 +68,7 @@ class histCryptoDatafeed:
         fullOhlcv = self.exchange.fetch_ohlcv(symbol=self.pair, limit=self.limit, timeframe='1m', since=startSince)
         since = fullOhlcv[-1][0] + 60000
 
-        fullOhlcvFull = [fullOhlcv]
+        fullOhlcvFull = fullOhlcv
 
         for i in range(loopCount):
             fullOhlcv = self.exchange.fetch_ohlcv(symbol=self.pair, limit=self.limit, timeframe='1m', since=since)
