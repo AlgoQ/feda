@@ -1,6 +1,6 @@
 from histCryptoDatafeed import histCryptoDatafeed
 
 # Create folder first
-datamanager = histCryptoDatafeed(fileName='data/ohlcv_bybit_LINKUSDT_126days.json', pair='LINK/USDT', days=126, strExchange='bybit', interval='1m')
+datamanager = histCryptoDatafeed(fileName='data/ohlcv_bybit_LINKUSDT_170days.json', pair='LINK/USDT', days=170, strExchange='bybit')
 
 ohlcv_binanceF = datamanager.fetchDatafeed()
