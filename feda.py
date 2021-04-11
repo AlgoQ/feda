@@ -3,7 +3,7 @@ from datetime import datetime
 import math
 # Extern modules
 import ccxt
-class histCryptoDatafeed:
+class Feda:
     def __init__(self, fileName:str, pair:str, days:int, strExchange:str='binanceFutures'):
         self.fileName = fileName
         self.pair = pair
@@ -59,6 +59,7 @@ class histCryptoDatafeed:
             raise Exception('Exchange is not supported')
 
     def fetchDatafeed(self):
+        print('Fetching klines...')
         until = self.exchange.milliseconds()
         startSince = until - 86400000 * self.days
 

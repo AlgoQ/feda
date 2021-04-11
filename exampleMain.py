@@ -1,6 +1,6 @@
-from histCryptoDatafeed import histCryptoDatafeed
+from feda import Feda
 
 # Create folder first
-datamanager = histCryptoDatafeed(fileName='data/ohlcv_bybit_LINKUSDT_170days.json', pair='LINK/USDT', days=170, strExchange='bybit')
+datamanager = Feda(fileName='data/ohlcv_bybit_LINKUSDT_30days.json', pair='LINK/USDT', days=30, strExchange='bybit')
 
-ohlcv_binanceF = datamanager.fetchDatafeed()
+ohlcv = datamanager.fetchDatafeed()
