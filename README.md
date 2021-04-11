@@ -12,7 +12,6 @@ This simple script will fetch the kline data from LINK/USDT for the last 170 day
 ```python
 from feda import Feda
 
-# Create folder first
 datamanager = Feda(fileName='data/ohlcv_bybit_LINKUSDT_170days.json', pair='LINK/USDT', days=170, strExchange='bybit')
 
 ohlcv = datamanager.fetchDatafeed() # Fetch klines and output them into given file
