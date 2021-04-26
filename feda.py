@@ -67,7 +67,10 @@ class Feda:
         loopCount = math.floor(diffBtwnUntilSince / self.limit)
 
         fullOhlcv = self.exchange.fetch_ohlcv(symbol=self.pair, limit=self.limit, timeframe='1m', since=startSince)
-        since = fullOhlcv[-1][0] + 60000
+        try:
+            since = fullOhlcv[-1][0] + 60000
+        except IndexError:
+            raise Exception(f"{strExchange} doesn't provide data from this point on")
 
         fullOhlcvFull = fullOhlcv
 
