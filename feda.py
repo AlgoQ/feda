@@ -70,7 +70,7 @@ class Feda:
         try:
             since = fullOhlcv[-1][0] + 60000
         except IndexError:
-            raise Exception(f"{strExchange} doesn't provide data from this point on")
+            raise Exception(f"{self.strExchange} doesn't provide data from this point on")
 
         fullOhlcvFull = fullOhlcv
 
