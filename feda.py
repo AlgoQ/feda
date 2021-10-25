@@ -17,7 +17,7 @@ class Feda:
                 'enableRateLimit': True
             })
 
-            self.limit = 1000
+            self.limit = 1500
         elif self.strExchange == 'binanceFutures':
             self.exchange = ccxt.binance({
                 'enableRateLimit': True,
@@ -26,7 +26,7 @@ class Feda:
                 }
             })
 
-            self.limit = 1000
+            self.limit = 1500
 
         elif self.strExchange == 'bybit':
             self.exchange = ccxt.bybit({
@@ -78,6 +78,7 @@ class Feda:
             fullOhlcv = self.exchange.fetch_ohlcv(symbol=self.pair, limit=self.limit, timeframe='1m', since=since)
             fullOhlcvFull = fullOhlcvFull + fullOhlcv
             since = fullOhlcv[-1][0] + 60000
+            print(since)
 
         f = open(self.fileName, "w")
 
