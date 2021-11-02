@@ -4,6 +4,7 @@ A user-friendly library to fetch kline (ohlcv) data from several crypto exchange
 ## Install
 ```shell
 git clone https://github.com/AlgoQ/feda
+mkdir data
 ```
 
 ## Getting Started
