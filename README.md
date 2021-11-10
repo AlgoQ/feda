@@ -4,7 +4,6 @@ A user-friendly library to fetch kline (ohlcv) data from several crypto exchange
 ## Install
 ```shell
 git clone https://github.com/AlgoQ/feda
-mkdir data
 ```
 
 ## Getting Started
@@ -13,14 +12,39 @@ This simple script will fetch the kline data from LINK/USDT for the last 170 day
 ```python
 from feda import Feda
 
-datamanager = Feda(fileName='data/ohlcv_bybit_LINKUSDT_170days.json', pair='LINK/USDT', days=170, strExchange='bybit')
+datamanager = Feda(
+    fileName='ohlcv_ftx_LINKUSD_30days.json',
+    pair='LINK/USD',
+    days=30,
+    exchange='ftx'
+)
 
-ohlcv = datamanager.fetchDatafeed() # Fetch klines and output them into given file
+data = datamanager.fetchDatafeed() # Fetch klines and output them into given file
+
+# You can also just fetch the klines 
+# data = datamanager.fetchDatafeed(writeToFile=False)
+```
+
+If you now want to convert your fetched klines to another interval
+```python
+# Convert klines to 1h
+import pandas as pd
+
+ohlcv = pd.DataFrame(data, columns=['date', 'open', 'high', 'low', 'close', 'volume'])
+
+interval = '1h'
+
+ohlcv = ohlcv.set_index('date')
+ohlcv.index = pd.to_datetime(ohlcv.index, unit='ms')
+
+ohlcv = ohlcv.groupby(pd.Grouper(freq=interval)).agg({'open': 'first', 'high': max, 'low': min, 'close': 'last', 'volume': sum})
+
+print(ohlcv)
 ```
 
 
 ## Supported Exchanges
-| Logo        | Exchange        | strExchange    |
+| Logo        | Exchange        | Parameter    |
 | ----------- | --------------- | -------------- |
 | [![binance](https://user-images.githubusercontent.com/1294454/29604020-d5483cdc-87ee-11e7-94c7-d1a8d9169293.jpg)](https://www.binance.com/en/register?ref=35973916) | [Binance](https://www.binance.com/en/register?ref=35973916) | binance |
 | [![binance futures](https://user-images.githubusercontent.com/1294454/29604020-d5483cdc-87ee-11e7-94c7-d1a8d9169293.jpg)](https://www.binance.com/en/register?ref=35973916) | [Binance Futures](https://www.binance.com/en/register?ref=35973916) | binanceFutures |

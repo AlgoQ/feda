@@ -4,21 +4,21 @@ import math
 # Extern modules
 import ccxt
 class Feda:
-    def __init__(self, fileName:str, pair:str, days:int, strExchange:str='binanceFutures'):
+    def __init__(self, fileName:str, pair:str, days:int, exchange:str='binanceFutures'):
         self.fileName = fileName
         self.pair = pair
         self.days = days
-        self.strExchange = strExchange
+        self.exchange = exchange
         self._checkExchange()
 
     def _checkExchange(self):
-        if self.strExchange == 'binance':
+        if self.exchange == 'binance':
             self.exchange = ccxt.binance({
                 'enableRateLimit': True
             })
 
             self.limit = 1500
-        elif self.strExchange == 'binanceFutures':
+        elif self.exchange == 'binanceFutures':
             self.exchange = ccxt.binance({
                 'enableRateLimit': True,
                 'options': {
@@ -28,13 +28,13 @@ class Feda:
 
             self.limit = 1500
 
-        elif self.strExchange == 'bybit':
+        elif self.exchange == 'bybit':
             self.exchange = ccxt.bybit({
                 'enableRateLimit': True
             })
 
             self.limit = 200
-        elif self.strExchange == 'okexFutures':
+        elif self.exchange == 'okexFutures':
             self.exchange = ccxt.okex({
                 'enableRateLimit': True,
                 'options': {
@@ -43,13 +43,13 @@ class Feda:
             })
 
             self.limit = 300
-        elif self.strExchange == 'bitstamp':
+        elif self.exchange == 'bitstamp':
             self.exchange = ccxt.bitstamp({
                 'enableRateLimit': True
             })
 
             self.limit = 1000
-        elif self.strExchange == 'ftx':
+        elif self.exchange == 'ftx':
             self.exchange = ccxt.ftx({
                 'enableRateLimit': True
             })
@@ -58,7 +58,7 @@ class Feda:
         else:
             raise Exception('Exchange is not supported')
 
-    def fetchDatafeed(self):
+    def fetchDatafeed(self, writeToFile=True):
         print('Fetching klines...')
         until = self.exchange.milliseconds()
         startSince = until - 86400000 * self.days
@@ -70,7 +70,7 @@ class Feda:
         try:
             since = fullOhlcv[-1][0] + 60000
         except IndexError:
-            raise Exception(f"{self.strExchange} doesn't provide data from this point on")
+            raise Exception(f"{self.exchange} doesn't provide data from this point on")
 
         fullOhlcvFull = fullOhlcv
 
@@ -79,10 +79,11 @@ class Feda:
             fullOhlcvFull = fullOhlcvFull + fullOhlcv
             since = fullOhlcv[-1][0] + 60000
             print(since)
+        
+        if writeToFile == True:
+            f = open(self.fileName, "w")
 
-        f = open(self.fileName, "w")
+            f.write(str(fullOhlcvFull))
+            f.close()
 
-        f.write(str(fullOhlcvFull))
-        f.close()
-
-        return fullOhlcv
+        return fullOhlcvFull
