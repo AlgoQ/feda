@@ -1,56 +1,53 @@
 # FEDA
-A user-friendly library to fetch kline (ohlcv) data from several crypto exchanges.
+A user-friendly library to fetch kline/ohlcv data from several crypto exchanges, using CCXT & pandas.
 
 ## Install
 ```shell
-git clone https://github.com/AlgoQ/feda
+$ git clone https://github.com/AlgoQ/feda
+$ pip install -r requirements.txt
 ```
 
-## Getting Started
-
-This simple script will fetch the kline data from LINK/USDT for the last 170 days on bybit and save this data into a file.
+## Some examples
+1. Fetch last 5000 daily candles for BTC/USDT:USDT (USDT settled perpetuals) & ETH/USDT:USDT on Binance & print these OHLCV dataframes
 ```python
+from asyncio import run
 from feda import Feda
 
-datamanager = Feda(
-    fileName='ohlcv_ftx_LINKUSD_30days.json',
-    pair='LINK/USD',
-    days=30,
-    exchange='ftx'
-)
+feda = Feda(symbols=['BTC/USDT:USDT', 'ETH/USDT:USDT'], timeframe='1d', limit=5000, exchangeId='binance')
+data = run(feda.main())
 
-data = datamanager.fetchDatafeed() # Fetch klines and output them into given file
-
-# You can also just fetch the klines 
-# data = datamanager.fetchDatafeed(writeToFile=False)
+for symbol, ohlcv in data.items():
+    print(symbol)
+    print(ohlcv)
 ```
 
-If you now want to convert your fetched klines to another interval
+2. Fetch all weekly candle for all spot symbols on Bybit since 1 Jan 2023 (1672527600000 - https://currentmillis.com/) & export them to csv's
 ```python
-# Convert klines to 1h
-import pandas as pd
+feda = Feda(timeframe='1h', startTime=1672527600000, marketType='spot', exchangeId='bybit')
+data = run(feda.main())
 
-ohlcv = pd.DataFrame(data, columns=['date', 'open', 'high', 'low', 'close', 'volume'])
-
-interval = '1h'
-
-ohlcv = ohlcv.set_index('date')
-ohlcv.index = pd.to_datetime(ohlcv.index, unit='ms')
-
-ohlcv = ohlcv.groupby(pd.Grouper(freq=interval)).agg({'open': 'first', 'high': max, 'low': min, 'close': 'last', 'volume': sum})
-
-print(ohlcv)
+for symbol, ohlcv in data.items():
+    path = f'{symbol}_{feda.timeframe}_{ohlcv["timeframe"].min() // 1000}_{ohlcv["timeframe"].max() // 1000}.csv'
+    ohlcv.to_csv(path, index=False)
+    print(f'{symbol} OHLCV csv data saved at `{path}`')
 ```
 
 
 ## Supported Exchanges
-| Logo        | Exchange        | Parameter    |
-| ----------- | --------------- | -------------- |
-| [![binance](https://user-images.githubusercontent.com/1294454/29604020-d5483cdc-87ee-11e7-94c7-d1a8d9169293.jpg)](https://www.binance.com/en/register?ref=35973916) | [Binance](https://www.binance.com/en/register?ref=35973916) | binance |
-| [![binance futures](https://user-images.githubusercontent.com/1294454/29604020-d5483cdc-87ee-11e7-94c7-d1a8d9169293.jpg)](https://www.binance.com/en/register?ref=35973916) | [Binance Futures](https://www.binance.com/en/register?ref=35973916) | binanceFutures |
-| [![ftx](https://user-images.githubusercontent.com/1294454/67149189-df896480-f2b0-11e9-8816-41593e17f9ec.jpg)](https://ftx.com/#a=1623029) | [FTX](https://ftx.com/#a=14595372) | ftx |
-| [![bybit](https://user-images.githubusercontent.com/51840849/76547799-daff5b80-649e-11ea-87fb-3be9bac08954.jpg)](https://www.bybit.com/app/register?ref=X7Prm) | [Bybit](https://www.bybit.com/en-US/invite?ref=wgPqr) | bybit |
+All exchanges that support `fetchOHLCV` on ccxt (most of them), [supported CCXT exchanges](https://github.com/ccxt/ccxt/wiki/Exchange-Markets)
+
+## Feda Parameters
+| Parameter     | Type             | Default Value | Description                                                                                               |
+|---------------|------------------|---------------|-----------------------------------------------------------------------------------------------------------|
+| symbols       | str or list      | None          | The trading pair symbol(s) or list of symbols.                                                            |
+| timeframe     | str              | '1d'          | The timeframe for the OHLCV data.                                                                         |
+| startTime     | str              | None          | The start time in milliseconds for fetching historical data.                                              |
+| limit         | int              | None          | The maximum number of data points to retrieve.                                                            |
+| marketType    | str              | 'spot'        | The market type. Options: spot, future, swap, option.                                                     |
+| quote         | str              | None          | The quote currency for the trading pair (e.g., 'USDT').                                                   |
+| settle        | str              | 'USDT'        | The settlement currency for the trading pair whenever the market type is swap. Options: USDT, USDC, COIN. |
+| callType      | str              | 'ohlcv'       | The type of API call. Options: ohlcv (more options coming soon).                                          |
+| exchangeId    | str              | 'binance'     | The ID of the exchange to fetch data from. Options: All [supported exchanges](https://github.com/ccxt/ccxt/wiki/Exchange-Markets) on CCXT.                      |
 
 ## TODO
-* Add more exchanges
-* Add support for csv
+* Add more call types (like fundingRateHistories, tickers, ...)
