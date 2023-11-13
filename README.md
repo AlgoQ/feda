@@ -1,6 +1,7 @@
 # FEDA
 A user-friendly library to fetch kline/ohlcv data from several crypto exchanges, using CCXT & pandas.
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ## Install
 ```shell
 $ git clone https://github.com/AlgoQ/feda
